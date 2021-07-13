@@ -14,9 +14,10 @@ interface IUserItem {
   email: string;
   initials: string;
   avatarColor: string;
+  id: number;
 }
 
-export const UserItem: React.FC<IUserItem> = ({ email, initials, avatarColor }: IUserItem) => {
+export const UserItem: React.FC<IUserItem> = ({ email, initials, avatarColor, id }: IUserItem) => {
   return (
     <Grid item>
       <Card>
@@ -27,7 +28,7 @@ export const UserItem: React.FC<IUserItem> = ({ email, initials, avatarColor }: 
           <Typography component="p">email: {email}</Typography>
         </CardContent>
         <CardActions>
-          <Link to={`/${email}`}>
+          <Link to={`/${id}`}>
             <Button size="small">Learn More</Button>
           </Link>
         </CardActions>

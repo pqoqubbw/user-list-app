@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TextField, Button, MenuItem, Container } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import { makeStyles } from '@material-ui/core/styles';
@@ -42,6 +42,10 @@ export const UserForm: React.FC<IUserForm> = ({ userList, setUserList }: IUserFo
     reset,
   } = useForm<IUserListData>();
 
+  useEffect(() => {
+    localStorage.setItem('userList', JSON.stringify(userList));
+  }, [userList]);
+
   const onSubmit = (data: IUserListData) => {
     const isValid = checkEmailDuplicate(data.email, userList);
 
@@ -50,15 +54,19 @@ export const UserForm: React.FC<IUserForm> = ({ userList, setUserList }: IUserFo
         ...prev,
         {
           ...data,
-          initials: getInitialsUser([data.firstname, data.lastname], userList)(),
+          id: prev.length + 1,
+          initials: getInitialsUser([data.firstname, data.lastname], userList),
           avatarColor: getRandomColor(),
         },
       ]);
       reset();
     } else {
-      setError('email', { message: 'Email should be unique' });
+      setError('email', {
+        message: 'Email should be unique',
+      });
     }
   };
+
   return (
     <Container maxWidth="xs">
       <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
@@ -72,11 +80,11 @@ export const UserForm: React.FC<IUserForm> = ({ userList, setUserList }: IUserFo
         />
         <TextField
           className={classes.formInput}
-          {...register('lastname', { required: 'Last Name is required' })}
           variant="outlined"
           error={!!errors.lastname}
           label="Last Name"
           helperText={errors.lastname ? errors.lastname.message : ''}
+          {...register('lastname', { required: 'Last Name is required' })}
         />
         <TextField
           className={classes.formInput}
@@ -84,16 +92,15 @@ export const UserForm: React.FC<IUserForm> = ({ userList, setUserList }: IUserFo
           error={!!errors.email}
           label="Email"
           helperText={errors.email ? errors.email.message : ''}
-          type="email"
-          {...register('email', { required: true })}
+          {...register('email', { required: 'Email is required' })}
         />
 
         <TextField
+          {...register('horoskop')}
           className={classes.formInput}
           select
-          {...register('horoskop')}
-          onChange={(e) => setValue('horoskop', e.target.value)}
           defaultValue=""
+          onChange={(e) => setValue('horoskop', e.target.value)}
           label="Horoskop"
         >
           {zodiacSigns.map((option, index) => (
@@ -104,11 +111,11 @@ export const UserForm: React.FC<IUserForm> = ({ userList, setUserList }: IUserFo
         </TextField>
 
         <TextField
+          {...register('bloodType')}
           className={classes.formInput}
           select
-          {...register('bloodType')}
-          onChange={(e) => setValue('bloodType', e.target.value)}
           defaultValue=""
+          onChange={(e) => setValue('bloodType', e.target.value)}
           label="Blood Type"
         >
           {bloodType.map((option, index) => (
@@ -125,7 +132,6 @@ export const UserForm: React.FC<IUserForm> = ({ userList, setUserList }: IUserFo
           type="date"
           {...register('date')}
         />
-
         <Button color="primary" type="submit" variant="contained">
           Add User
         </Button>
