@@ -23,8 +23,6 @@ const App: React.FC = () => {
     initialValues ? JSON.parse(initialValues) : []
   );
 
-  console.log('userList', userList);
-
   return (
     <Router>
       <Switch>
